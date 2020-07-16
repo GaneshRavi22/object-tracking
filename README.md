@@ -79,12 +79,14 @@
 
 ### From Notebook
 Execute the downloaded `<PROJECT_ROOT>/noteooks/object-detection-real-time.ipynb` Notebook. The last cell will start a new Window which renders the video from the default video office on the machine, with the output bounding boxes from the Object Detection model.
+Press `q` to quit the window that shows the detected objects on the web-cam feed.
 
 ### Python File
 Run the following command to start the application:
 ```bash
 python src/detection/real_time.py "<PROJECT_ROOT>/models"
 ```
+Press `q` to quit the window that shows the detected objects on the web-cam feed.
 
 ## Real-time Execution using Kafka
 1. Run the following commands to bring up the Kafka containers:
@@ -100,10 +102,12 @@ python src/detection/real_time.py "<PROJECT_ROOT>/models"
     ```bash
    python src/messaging/frame_producer.py 
    ```
-   This process also open a Window titled `Producer` where the frames read from webcam will be displayed.
+   This process also open a Window titled `Producer` where the frames read from web-cam will be displayed.
+   Press `esc` to quit this window.
 4. Execute the following command to run the Consumer process which will read frames from the Kafka topic
     ```bash
    python src/messaging/frame_consumer.py 
    ```
    This process also open a Window titled `Consumer` where the frames read from the Kafka topic will be displayed.
+   Press `esc` to quit this window.
    
