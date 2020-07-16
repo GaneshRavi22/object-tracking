@@ -103,22 +103,30 @@ Kafka topic `topic1`. Here the frame rate is set at 10 FPS, this can be modified
 `src/real_time/frame_producer.py ` file. FPS of 10 means that from the web-cam, we read only 10 frames 
 per second.
     ```bash
-   python src/real_time/frame_producer.py 
+   python src/real_time/webcam_reader.py 
    ```
    This process also opens a Window titled `Producer` where the frames read from web-cam will be displayed.
    Press `esc` to quit this window.
 4. Execute the following command to run the Object Detection process which will read frames from `topic1` 
 Kafka topic, perform object detection and send the output frame with bounding boxes to `topic2`.
     ```bash
-   python src/real_time/detector.py 
+   python src/real_time/object_detector.py "<PROJECT_ROOT>/models"
    ```
    This process also opens a Window titled `Detector` where the frames read from web-cam will be displayed.
    Press `esc` to quit this window.
-5. Execute the following command to run the Consumer process which will read frames from the Kafka topic 
-`topic2`
+5. The client to see the video with detected bounding boxes is available in two versions. Python application and 
+Flask web-application.  
+    a. _Python application_:  
+    Execute the following command to run the client process which will read frames from the Kafka topic `topic2`      
     ```bash
-   python src/real_time/frame_consumer.py 
+    python src/real_time/python_client.py 
+    ```
+    This process also opens a Window titled `Consumer` where the frames read from the Kafka topic will be displayed.
+    Press `esc` to quit this window.
+       
+    b. _Flask web-application_:  
+    Execute the following command to run the client process which will read frames from the Kafka topic `topic2`  
+    ```bash
+    python src/real_time/web_ui_client.py 
    ```
-   This process also opens a Window titled `Consumer` where the frames read from the Kafka topic will be displayed.
-   Press `esc` to quit this window.
-   
+    After executing the command, open the url http://localhost:5000 on your favorite web-browser

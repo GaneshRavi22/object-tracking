@@ -74,7 +74,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("The full path to the cloned 'models' folder should be given as an argument")
         print("Usage:")
-        print("python detector.py /home/username/models")
+        print("python object_detector.py /home/username/models")
         raise ValueError("Required argument not passed!")
 
     # List of the strings that is used to add correct label for each box.
@@ -84,7 +84,11 @@ if __name__ == "__main__":
     model_name = 'ssd_mobilenet_v1_coco_2018_01_28'
     detection_model = load_model(model_name)
 
+    # Starting fresh by deleting all backed up frame messages in the topic
     kafka = Kafka(BROKER_URL)
+    kafka.delete_topic(READ_TOPIC_NAME)
+    kafka.create_topic(READ_TOPIC_NAME)
+    kafka.create_topic(SEND_TOPIC_NAME)
     kafka.delete_topic(SEND_TOPIC_NAME)
     kafka.create_topic(SEND_TOPIC_NAME)
 

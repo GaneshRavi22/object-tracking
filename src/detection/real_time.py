@@ -57,7 +57,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("The full path to the cloned 'models' folder should be given as an argument")
         print("Usage:")
-        print("python detector.py /home/username/models")
+        print("python object_detector.py /home/username/models")
         raise ValueError("Required argument not passed!")
 
     # List of the strings that is used to add correct label for each box.
