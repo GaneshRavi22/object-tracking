@@ -4,7 +4,7 @@ import pickle
 from time import sleep
 import logging
 
-from messaging.kafka_utils import Kafka
+from real_time.kafka_utils import Kafka
 
 
 logging.basicConfig(level=logging.DEBUG)

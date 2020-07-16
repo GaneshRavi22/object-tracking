@@ -4,10 +4,18 @@ import numpy as np
 import tensorflow as tf
 import pathlib
 import cv2
+import pickle
+from confluent_kafka import Consumer, Producer
 
 from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
+from real_time.kafka_utils import Kafka
+
+
+BROKER_URL = 'localhost:9092'
+READ_TOPIC_NAME = 'topic1'
+SEND_TOPIC_NAME = 'topic2'
 
 
 def load_model(model_name):
@@ -42,7 +50,6 @@ def run_inference_for_single_image(model, image):
 
     # Handle models with masks:
     if 'detection_masks' in output_dict:
-        # Reframe the the bbox mask to the image size.
         detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
                   output_dict['detection_masks'], output_dict['detection_boxes'],
                    image.shape[0], image.shape[1])
@@ -51,6 +58,16 @@ def run_inference_for_single_image(model, image):
         output_dict['detection_masks_reframed'] = detection_masks_reframed.numpy()
 
     return output_dict
+
+
+def send_message(message):
+    producer = Producer({
+        'bootstrap.servers': BROKER_URL,
+        'message.max.bytes': 50000000
+    })
+
+    producer.produce(SEND_TOPIC_NAME, message)
+    producer.flush()
 
 
 if __name__ == "__main__":
@@ -67,30 +84,48 @@ if __name__ == "__main__":
     model_name = 'ssd_mobilenet_v1_coco_2018_01_28'
     detection_model = load_model(model_name)
 
-    cam = cv2.cv2.VideoCapture(0)
+    kafka = Kafka(BROKER_URL)
+    kafka.delete_topic(SEND_TOPIC_NAME)
+    kafka.create_topic(SEND_TOPIC_NAME)
 
-    while (True):
-        ret, frame = cam.read()
+    c = Consumer({
+        'bootstrap.servers': BROKER_URL,
+        'group.id': 'mygroup',
+        'auto.offset.reset': 'earliest',
+        'fetch.message.max.bytes': 50000000
+    })
 
-        image_np = np.array(frame)
-        # Run the Objection model
-        output_dict = run_inference_for_single_image(detection_model, image_np)
-        print(output_dict)
+    c.subscribe([READ_TOPIC_NAME])
+
+    while True:
+        msg = c.poll(1.0)
+
+        if msg is None:
+            continue
+        if msg.error():
+            print("Consumer error: {}".format(msg.error()))
+            continue
+
+        frame = pickle.loads(msg.value())
+        output_dict = run_inference_for_single_image(detection_model, frame)
+        #print(output_dict)
 
         # Visualization of the results of detection on the original frame
         vis_util.visualize_boxes_and_labels_on_image_array(
-          image_np,
-          output_dict['detection_boxes'],
-          output_dict['detection_classes'],
-          output_dict['detection_scores'],
-          category_index,
-          instance_masks=output_dict.get('detection_masks'),
-          use_normalized_coordinates=True,
-          line_thickness=8)
-        cv2.imshow('image', cv2.resize(image_np,(1000,800)))
+            frame,
+            output_dict['detection_boxes'],
+            output_dict['detection_classes'],
+            output_dict['detection_scores'],
+            category_index,
+            instance_masks=output_dict.get('detection_masks'),
+            use_normalized_coordinates=True,
+            line_thickness=8)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        send_message(pickle.dumps(frame, protocol=0))
+
+        cv2.imshow('Detector', frame)
+        if cv2.waitKey(1) == 27:
+            break  # esc to quit
 
     cv2.destroyAllWindows()
-    cam.release()
+    c.close()

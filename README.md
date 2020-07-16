@@ -98,16 +98,27 @@ Press `q` to quit the window that shows the detected objects on the web-cam feed
     ```bash
     pip install confluent-kafka
    ```
-3. Execute the following command to run the Producer process which will capture frames and send to Kafka topic
+3. Execute the following command to run the Producer process which will capture frames and send to 
+Kafka topic `topic1`. Here the frame rate is set at 10 FPS, this can be modified in the 
+`src/real_time/frame_producer.py ` file. FPS of 10 means that from the web-cam, we read only 10 frames 
+per second.
     ```bash
-   python src/messaging/frame_producer.py 
+   python src/real_time/frame_producer.py 
    ```
-   This process also open a Window titled `Producer` where the frames read from web-cam will be displayed.
+   This process also opens a Window titled `Producer` where the frames read from web-cam will be displayed.
    Press `esc` to quit this window.
-4. Execute the following command to run the Consumer process which will read frames from the Kafka topic
+4. Execute the following command to run the Object Detection process which will read frames from `topic1` 
+Kafka topic, perform object detection and send the output frame with bounding boxes to `topic2`.
     ```bash
-   python src/messaging/frame_consumer.py 
+   python src/real_time/detector.py 
    ```
-   This process also open a Window titled `Consumer` where the frames read from the Kafka topic will be displayed.
+   This process also opens a Window titled `Detector` where the frames read from web-cam will be displayed.
+   Press `esc` to quit this window.
+5. Execute the following command to run the Consumer process which will read frames from the Kafka topic 
+`topic2`
+    ```bash
+   python src/real_time/frame_consumer.py 
+   ```
+   This process also opens a Window titled `Consumer` where the frames read from the Kafka topic will be displayed.
    Press `esc` to quit this window.
    

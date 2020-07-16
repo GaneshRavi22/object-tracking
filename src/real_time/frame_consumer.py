@@ -1,4 +1,4 @@
-from confluent_kafka import Consumer, KafkaException
+from confluent_kafka import Consumer
 import pickle
 import logging
 import cv2
@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 BROKER_URL = 'localhost:9092'
-TOPIC_NAME = 'topic1'
+TOPIC_NAME = 'topic2'
 
 
 def read_frames():
