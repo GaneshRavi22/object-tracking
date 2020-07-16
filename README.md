@@ -6,20 +6,18 @@
 ## Pre-requisites:
 1. GIT Installed
 2. Python3 and pip configured
-3. Build tools for OpenCV
-	On Windows:
-	------------
-	Install Microsoft C++ Build tools by following the steps below:
-	* Go to => https://visualstudio.microsoft.com/visual-cpp-build-tools/
-	* Click on "Download Build tools"
-	* Open the installer and install "Visual Studio Build Tools 2019"
+3. Build tools for OpenCV.  
+	* On Windows:  
+        Install Microsoft C++ Build tools by following the steps below:
+        * Go to => https://visualstudio.microsoft.com/visual-cpp-build-tools/
+        * Click on "Download Build tools"
+        * Open the installer and install "Visual Studio Build Tools 2019"
 		
-	On Linux:
-	---------
-	```bash
-	sudo apt update
-	sudo apt install python3-opencv
-	```
+	* On Linux:  
+        ```bash
+        sudo apt update
+        sudo apt install python3-opencv
+        ```
 
 ## Installing required Python Libraries
 * Install the below required standard standard libraries
