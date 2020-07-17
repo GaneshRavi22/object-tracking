@@ -1,5 +1,7 @@
 # Real-time Object Detection Using Tensorflow
 
+![System Architecture](docs/architecture.png "Real-time System Architecture")
+
 ## Assumptions:
 <PROJECT_ROOT> represents the full path where this GIT repo is cloned.
 
